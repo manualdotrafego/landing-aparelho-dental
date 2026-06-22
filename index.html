@@ -355,13 +355,18 @@ src="https://www.facebook.com/tr?id=1279060486021727&ev=PageView&noscript=1"
 
     loader.style.display = "none";
 
-    // dispara evento de conversão pro Meta Pixel
+    // dispara evento de conversão pro Meta Pixel (só ao concluir o formulário)
     if(window.fbq){ fbq('track', 'Lead', { content_name: 'Aparelho Dental' }); }
 
     mostrar(3);
+
+    // se não clicar em 5s, redireciona automático pro WhatsApp
+    waTimer = setTimeout(abrirWhatsApp, 5000);
   }
 
+  let waTimer = null;
   function abrirWhatsApp(){
+    clearTimeout(waTimer); // evita disparo duplo se o usuário clicar antes dos 5s
     const msg = encodeURIComponent(CONFIG.WHATSAPP_MSG);
     window.location.href = `https://wa.me/${CONFIG.WHATSAPP}?text=${msg}`;
   }
