@@ -294,6 +294,11 @@ var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n
 </div>
 
 <script>
+  // TikTok Conversions API — PageView server-side ao carregar
+  if (CONFIG.SHEETS_URL && !CONFIG.SHEETS_URL.includes("COLE_AQUI")) {
+    fetch(CONFIG.SHEETS_URL, { mode: 'no-cors' }).catch(function(){});
+  }
+
   let stepAtual = 0;
   const TOTAL = 3; // passos com progresso (0..2); o 3 é o sucesso
   const dados = { nome:"", telefone:"" };
