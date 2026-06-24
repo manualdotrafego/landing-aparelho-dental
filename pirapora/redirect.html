@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="theme-color" content="#ffffff" />
+<title>Redirecionando...</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:#fff;
+    color:#111;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:100dvh;
+    padding:24px;
+  }
+  .card{
+    width:100%;
+    max-width:400px;
+    text-align:center;
+  }
+  .logo{
+    font-size:15px;
+    letter-spacing:.5px;
+    margin-bottom:40px;
+    color:#6b7280;
+  }
+  .logo .bold{font-weight:800;color:#111;}
+
+  /* Spinner */
+  .spinner{
+    width:56px;height:56px;
+    border:4px solid #e5e7eb;
+    border-top-color:#111;
+    border-radius:50%;
+    animation:spin .8s linear infinite;
+    margin:0 auto 32px;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  h1{
+    font-size:22px;
+    font-weight:700;
+    line-height:1.35;
+    margin-bottom:12px;
+  }
+  .sub{
+    font-size:15px;
+    color:#6b7280;
+    margin-bottom:36px;
+  }
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:#25D366;
+    color:#fff;
+    border:none;
+    border-radius:14px;
+    padding:16px 28px;
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+    text-decoration:none;
+    transition:opacity .2s;
+  }
+  .btn:active{opacity:.85;}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo"><span>DBOUT</span><span class="bold">MÍDIA</span></div>
+  <div class="spinner"></div>
+  <h1>Estamos te redirecionando para falar com um de nossos atendentes</h1>
+  <p class="sub">Você será encaminhado em instantes...</p>
+  <a class="btn" id="waBtn" href="#">💬 Ir agora para o WhatsApp</a>
+</div>
+
+<script>
+  const WHATSAPP = "553898155539";
+  const MSG = encodeURIComponent("Olá vim através do formulário garantir a minha vaga para colocar aparelho dental");
+  const url = "https://wa.me/" + WHATSAPP + "?text=" + MSG;
+
+  document.getElementById("waBtn").href = url;
+  setTimeout(function(){ window.location.href = url; }, 3000);
+</script>
+</body>
+</html>
