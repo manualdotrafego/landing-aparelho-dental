@@ -299,6 +299,18 @@ var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n
     fetch(CONFIG.SHEETS_URL, { mode: 'no-cors' }).catch(function(){});
   }
 
+  // Captura UTMs da URL no carregamento
+  const _utms = (function(){
+    const p = new URLSearchParams(window.location.search);
+    return {
+      utm_source:   p.get('utm_source')   || '',
+      utm_medium:   p.get('utm_medium')   || '',
+      utm_campaign: p.get('utm_campaign') || '',
+      utm_content:  p.get('utm_content')  || '',
+      utm_term:     p.get('utm_term')     || '',
+    };
+  })();
+
   let stepAtual = 0;
   const TOTAL = 3; // passos com progresso (0..2); o 3 é o sucesso
   const dados = { nome:"", telefone:"" };
@@ -363,7 +375,12 @@ var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n
             nome: dados.nome,
             telefone: dados.telefone,
             origem: "pirapora",
-            data: new Date().toISOString()
+            data: new Date().toISOString(),
+            utm_source:   _utms.utm_source,
+            utm_medium:   _utms.utm_medium,
+            utm_campaign: _utms.utm_campaign,
+            utm_content:  _utms.utm_content,
+            utm_term:     _utms.utm_term,
           })
         });
       }
