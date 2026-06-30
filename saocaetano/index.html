@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="theme-color" content="#ffffff" />
+<title>Garanta sua vaga — Avaliação de Aparelho Dental</title>
+
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '1279060486021727');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=1279060486021727&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
+
+<!-- ============================================================= -->
+<!-- ====== CONFIGURAÇÃO: PREENCHA OS 2 VALORES ABAIXO ============ -->
+<!-- ============================================================= -->
+<script>
+  const CONFIG = {
+    // 1) Endpoint do Google Formulário (recebe os leads sem precisar de autorização)
+    //    Respostas caem na aba "Respostas" do formulário / planilha vinculada.
+    FORM_ACTION: "https://docs.google.com/forms/d/e/1FAIpQLSdenOPZ52uDyb_7WKBVOCVBlp4Ma98DpojohWWTIgtj7V5-Rg/formResponse",
+    FORM_ENTRIES: {
+      nome:         "entry.877323197",
+      telefone:     "entry.205404588",
+      origem:       "entry.505461976",
+      utm_source:   "entry.683040128",
+      utm_medium:   "entry.1011237227",
+      utm_campaign: "entry.1822576786",
+      utm_content:  "entry.940572320",
+    },
+
+    // 2) WhatsApp de destino (só números, com DDI 55). Ex: 5511999999999
+    WHATSAPP: "5511939556457",
+
+    // Mensagem que já vai preenchida ao abrir o WhatsApp
+    WHATSAPP_MSG: "Olá vim através do formulário garantir a minha vaga para colocar aparelho dental",
+  };
+</script>
+
+<style>
+  :root{
+    --preto:#111111;
+    --cinza:#6b7280;
+    --cinza-claro:#e5e7eb;
+    --amarelo:#f5f24a;
+    --bg:#ffffff;
+    --radius:16px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--preto);
+    display:flex;
+    justify-content:center;
+    min-height:100dvh;
+  }
+  .app{
+    width:100%;
+    max-width:440px;
+    min-height:100dvh;
+    display:flex;
+    flex-direction:column;
+    padding:24px 22px calc(24px + env(safe-area-inset-bottom));
+    position:relative;
+  }
+
+  /* Barra de progresso */
+  .progress-wrap{
+    height:6px;
+    background:var(--cinza-claro);
+    border-radius:999px;
+    overflow:hidden;
+    margin-bottom:32px;
+    transition:opacity .3s;
+  }
+  .progress-bar{
+    height:100%;
+    width:0%;
+    background:var(--preto);
+    border-radius:999px;
+    transition:width .45s cubic-bezier(.16,1,.3,1);
+  }
+
+  /* Logo */
+  .logo{
+    display:flex;
+    align-items:baseline;
+    justify-content:flex-start;
+    font-size:16px;
+    letter-spacing:.5px;
+    margin-bottom:8px;
+  }
+  .logo .thin{font-weight:300;}
+  .logo .bold{font-weight:800;}
+
+  /* Passos */
+  .step{
+    display:none;
+    flex-direction:column;
+    flex:1;
+    animation:fade .4s ease both;
+  }
+  .step.active{display:flex;}
+  @keyframes fade{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+
+  .spacer{flex:1;}
+
+  h1{
+    font-size:30px;
+    line-height:1.18;
+    font-weight:800;
+    letter-spacing:-.5px;
+    margin-bottom:14px;
+  }
+  h1 .hl{
+    background:var(--amarelo);
+    padding:0 4px;
+    border-radius:4px;
+  }
+  .sub{
+    font-size:16px;
+    color:var(--cinza);
+    line-height:1.5;
+    margin-bottom:24px;
+  }
+
+  .label{
+    font-size:14px;
+    font-weight:600;
+    color:var(--cinza);
+    margin-bottom:10px;
+    display:block;
+  }
+  .field{
+    width:100%;
+    border:2px solid var(--cinza-claro);
+    border-radius:14px;
+    padding:18px 16px;
+    font-size:17px;
+    outline:none;
+    transition:border-color .2s;
+    background:#fff;
+    color:var(--preto);
+  }
+  .field:focus{border-color:var(--preto);}
+  .field::placeholder{color:#9ca3af;}
+  .erro{
+    color:#dc2626;
+    font-size:13px;
+    margin-top:8px;
+    min-height:16px;
+    display:none;
+  }
+  .erro.show{display:block;}
+
+  /* Botões */
+  .btn{
+    width:100%;
+    border:none;
+    border-radius:14px;
+    padding:18px;
+    font-size:17px;
+    font-weight:700;
+    cursor:pointer;
+    background:var(--preto);
+    color:#fff;
+    transition:transform .12s, opacity .2s;
+    display:flex;align-items:center;justify-content:center;gap:8px;
+  }
+  .btn:active{transform:scale(.98);}
+  .btn:disabled{opacity:.45;cursor:not-allowed;}
+  .btn-wa{background:#25D366;}
+  .btn-area{margin-top:18px;margin-bottom:24px;}
+
+  /* Badge de urgência */
+  .urgencia{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+    width:fit-content;
+    margin:0 auto 14px;
+    background:#fff0f0;
+    color:#dc2626;
+    font-weight:700;
+    font-size:14px;
+    padding:9px 15px;
+    border-radius:999px;
+  }
+
+  /* Ilustração simples cards (boas-vindas) */
+  .hero-emoji{font-size:60px;margin-bottom:22px;text-align:center;}
+
+  /* Sucesso */
+  .check{
+    width:84px;height:84px;border-radius:50%;
+    background:var(--amarelo);
+    display:flex;align-items:center;justify-content:center;
+    font-size:42px;margin:0 auto 24px;
+    animation:pop .5s cubic-bezier(.16,1.3,.4,1) both;
+  }
+  @keyframes pop{from{transform:scale(0);}to{transform:scale(1);}}
+  .center{text-align:center;}
+
+  .loader{
+    width:22px;height:22px;border:3px solid rgba(255,255,255,.35);
+    border-top-color:#fff;border-radius:50%;
+    animation:spin .7s linear infinite;display:none;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="progress-wrap" id="progressWrap"><div class="progress-bar" id="progressBar"></div></div>
+
+  <!-- ============ PASSO 0 — BOAS-VINDAS ============ -->
+  <section class="step active" data-step="0">
+    <div class="logo"><span class="thin">DBOUT</span><span class="bold">MÍDIA</span></div>
+    <div class="spacer"></div>
+    <div class="hero-emoji">🦷✨</div>
+    <h1>Garanta sua <span class="hl">vaga</span> para colocar aparelho dental <span class="hl">100% gratuito</span></h1>
+    <p class="sub">Vagas limitadas. Preencha em menos de 30 segundos e fale direto com nossa equipe.</p>
+    <div class="spacer"></div>
+    <div class="btn-area">
+      <span class="urgencia">🔥 Restam apenas 3 vagas</span>
+      <button class="btn" onclick="next()">Quero garantir minha vaga</button>
+    </div>
+  </section>
+
+  <!-- ============ PASSO 1 — NOME ============ -->
+  <section class="step" data-step="1">
+    <h1>Qual é o seu <span class="hl">nome</span>?</h1>
+    <p class="sub">Para a gente saber como te chamar 😊</p>
+    <label class="label" for="nome">Nome completo</label>
+    <input class="field" id="nome" type="text" placeholder="Digite seu nome" autocomplete="name" />
+    <div class="erro" id="erroNome">Por favor, digite seu nome.</div>
+    <div class="spacer"></div>
+    <div class="btn-area">
+      <button class="btn" onclick="validarNome()">Continuar</button>
+    </div>
+  </section>
+
+  <!-- ============ PASSO 2 — TELEFONE ============ -->
+  <section class="step" data-step="2">
+    <h1>Qual seu <span class="hl">WhatsApp</span>?</h1>
+    <p class="sub">É por aqui que vamos confirmar sua vaga.</p>
+    <label class="label" for="telefone">Número com DDD</label>
+    <input class="field" id="telefone" type="tel" inputmode="numeric" placeholder="(11) 99999-9999" autocomplete="tel" />
+    <div class="erro" id="erroTel">Digite um número válido com DDD.</div>
+    <div class="spacer"></div>
+    <div class="btn-area">
+      <button class="btn" id="btnEnviar" onclick="enviar()">
+        <span id="btnEnviarTxt">Continuar</span>
+        <span class="loader" id="loader"></span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ============ PASSO 3 — SUCESSO / WHATSAPP ============ -->
+  <section class="step" data-step="3">
+    <div class="spacer"></div>
+    <div class="center">
+      <div class="check">✓</div>
+      <h1 style="text-align:center;">Vaga <span class="hl">garantida!</span></h1>
+      <p class="sub" style="text-align:center;">Falta só um passo: clique abaixo e fale com nossa equipe no WhatsApp agora mesmo.</p>
+    </div>
+    <div class="spacer"></div>
+    <div class="btn-area">
+      <button class="btn btn-wa" onclick="abrirWhatsApp()">💬 Falar no WhatsApp</button>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  // Captura UTMs da URL no carregamento
+  const _utms = (function(){
+    const p = new URLSearchParams(window.location.search);
+    return {
+      utm_source:   p.get('utm_source')   || '',
+      utm_medium:   p.get('utm_medium')   || '',
+      utm_campaign: p.get('utm_campaign') || '',
+      utm_content:  p.get('utm_content')  || '',
+      utm_term:     p.get('utm_term')     || '',
+    };
+  })();
+
+  let stepAtual = 0;
+  const TOTAL = 3;
+  const dados = { nome:"", telefone:"" };
+
+  function mostrar(step){
+    document.querySelectorAll(".step").forEach(s=>s.classList.remove("active"));
+    document.querySelector(`.step[data-step="${step}"]`).classList.add("active");
+    stepAtual = step;
+    const bar = document.getElementById("progressBar");
+    const wrap = document.getElementById("progressWrap");
+    if(step >= 3){ wrap.style.opacity = "0"; }
+    else { wrap.style.opacity = "1"; bar.style.width = (step/TOTAL*100) + "%"; }
+    const inp = document.querySelector(`.step[data-step="${step}"] .field`);
+    if(inp) setTimeout(()=>inp.focus(), 350);
+  }
+
+  function next(){ mostrar(stepAtual+1); }
+
+  function validarNome(){
+    const v = document.getElementById("nome").value.trim();
+    const erro = document.getElementById("erroNome");
+    if(v.length < 2){ erro.classList.add("show"); return; }
+    erro.classList.remove("show");
+    dados.nome = v;
+    next();
+  }
+
+  const telInput = document.getElementById("telefone");
+  telInput.addEventListener("input", ()=>{
+    let v = telInput.value.replace(/\D/g,"").slice(0,11);
+    if(v.length > 6) v = `(${v.slice(0,2)}) ${v.slice(2,7)}-${v.slice(7)}`;
+    else if(v.length > 2) v = `(${v.slice(0,2)}) ${v.slice(2)}`;
+    else if(v.length > 0) v = `(${v}`;
+    telInput.value = v;
+  });
+
+  function soDigitos(s){ return (s||"").replace(/\D/g,""); }
+
+  async function enviar(){
+    const erro = document.getElementById("erroTel");
+    const tel = soDigitos(telInput.value);
+    if(tel.length < 10){ erro.classList.add("show"); return; }
+    erro.classList.remove("show");
+    dados.telefone = telInput.value;
+
+    const btn = document.getElementById("btnEnviar");
+    const txt = document.getElementById("btnEnviarTxt");
+    const loader = document.getElementById("loader");
+    btn.disabled = true; txt.textContent = "Enviando..."; loader.style.display = "inline-block";
+
+    try{
+      if(CONFIG.FORM_ACTION){
+        const E = CONFIG.FORM_ENTRIES;
+        const body = new URLSearchParams();
+        body.append(E.nome,         dados.nome);
+        body.append(E.telefone,     dados.telefone);
+        body.append(E.origem,       "saocaetano");
+        body.append(E.utm_source,   _utms.utm_source);
+        body.append(E.utm_medium,   _utms.utm_medium);
+        body.append(E.utm_campaign, _utms.utm_campaign);
+        body.append(E.utm_content,  _utms.utm_content);
+        await fetch(CONFIG.FORM_ACTION, {
+          method:"POST",
+          mode:"no-cors",
+          headers:{"Content-Type":"application/x-www-form-urlencoded"},
+          body: body.toString()
+        });
+      }
+    }catch(e){
+      console.warn("Falha ao enviar o lead:", e);
+    }
+
+    loader.style.display = "none";
+
+    if(window.fbq){ fbq('track', 'Lead', { content_name: 'Aparelho Dental' }); }
+
+    mostrar(3);
+
+    waTimer = setTimeout(abrirWhatsApp, 5000);
+  }
+
+  let waTimer = null;
+  function abrirWhatsApp(){
+    clearTimeout(waTimer);
+    const msg = encodeURIComponent(CONFIG.WHATSAPP_MSG);
+    window.location.href = `https://wa.me/${CONFIG.WHATSAPP}?text=${msg}`;
+  }
+
+  document.getElementById("nome").addEventListener("keydown", e=>{ if(e.key==="Enter") validarNome(); });
+  telInput.addEventListener("keydown", e=>{ if(e.key==="Enter") enviar(); });
+</script>
+</body>
+</html>
