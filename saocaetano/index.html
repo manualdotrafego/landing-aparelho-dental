@@ -33,6 +33,8 @@ src="https://www.facebook.com/tr?id=1279060486021727&ev=PageView&noscript=1"
     //    Respostas caem na aba "Respostas" do formulário / planilha vinculada.
     FORM_ACTION: "https://docs.google.com/forms/d/e/1FAIpQLSdenOPZ52uDyb_7WKBVOCVBlp4Ma98DpojohWWTIgtj7V5-Rg/formResponse",
     FORM_ENTRIES: {
+      qualifica:    "entry.897873625",   // Mora/trabalha em São Caetano do Sul? (Sim/Não)
+      localOrigem:  "entry.1448750509",  // Se não, de onde você é?
       nome:         "entry.877323197",
       telefone:     "entry.205404588",
       origem:       "entry.505461976",
@@ -168,6 +170,24 @@ src="https://www.facebook.com/tr?id=1279060486021727&ev=PageView&noscript=1"
   }
   .erro.show{display:block;}
 
+  /* Opções de assinalar (Sim/Não) */
+  .opcoes{display:flex;flex-direction:column;gap:12px;}
+  .opt{
+    width:100%;
+    border:2px solid var(--cinza-claro);
+    border-radius:14px;
+    padding:18px 16px;
+    font-size:17px;
+    font-weight:600;
+    background:#fff;
+    color:var(--preto);
+    cursor:pointer;
+    text-align:left;
+    transition:border-color .2s, background .2s, transform .12s;
+  }
+  .opt:active{transform:scale(.99);}
+  .opt.sel{border-color:var(--preto);background:#fafafa;}
+
   /* Botões */
   .btn{
     width:100%;
@@ -244,8 +264,27 @@ src="https://www.facebook.com/tr?id=1279060486021727&ev=PageView&noscript=1"
     </div>
   </section>
 
-  <!-- ============ PASSO 1 — NOME ============ -->
+  <!-- ============ PASSO 1 — QUALIFICAÇÃO (opt-in) ============ -->
   <section class="step" data-step="1">
+    <h1>Você mora ou trabalha próximo ou em <span class="hl">São Caetano do Sul</span>?</h1>
+    <p class="sub">Queremos confirmar se conseguimos te atender 😊</p>
+    <div class="opcoes">
+      <button type="button" class="opt" id="optSim" onclick="responderLocal('Sim')">Sim</button>
+      <button type="button" class="opt" id="optNao" onclick="responderLocal('Não')">Não</button>
+    </div>
+    <div id="localNaoWrap" style="display:none;margin-top:20px;">
+      <label class="label" for="localOrigem">De onde você é?</label>
+      <input class="field" id="localOrigem" type="text" placeholder="Sua cidade / estado" />
+      <div class="erro" id="erroLocal">Por favor, informe de onde você é.</div>
+    </div>
+    <div class="spacer"></div>
+    <div class="btn-area">
+      <button class="btn" id="btnLocal" onclick="continuarLocal()" style="display:none;">Continuar</button>
+    </div>
+  </section>
+
+  <!-- ============ PASSO 2 — NOME ============ -->
+  <section class="step" data-step="2">
     <h1>Qual é o seu <span class="hl">nome</span>?</h1>
     <p class="sub">Para a gente saber como te chamar 😊</p>
     <label class="label" for="nome">Nome completo</label>
@@ -257,8 +296,8 @@ src="https://www.facebook.com/tr?id=1279060486021727&ev=PageView&noscript=1"
     </div>
   </section>
 
-  <!-- ============ PASSO 2 — TELEFONE ============ -->
-  <section class="step" data-step="2">
+  <!-- ============ PASSO 3 — TELEFONE ============ -->
+  <section class="step" data-step="3">
     <h1>Qual seu <span class="hl">WhatsApp</span>?</h1>
     <p class="sub">É por aqui que vamos confirmar sua vaga.</p>
     <label class="label" for="telefone">Número com DDD</label>
@@ -273,8 +312,8 @@ src="https://www.facebook.com/tr?id=1279060486021727&ev=PageView&noscript=1"
     </div>
   </section>
 
-  <!-- ============ PASSO 3 — SUCESSO / WHATSAPP ============ -->
-  <section class="step" data-step="3">
+  <!-- ============ PASSO 4 — SUCESSO / WHATSAPP ============ -->
+  <section class="step" data-step="4">
     <div class="spacer"></div>
     <div class="center">
       <div class="check">✓</div>
@@ -303,8 +342,8 @@ src="https://www.facebook.com/tr?id=1279060486021727&ev=PageView&noscript=1"
   })();
 
   let stepAtual = 0;
-  const TOTAL = 3;
-  const dados = { nome:"", telefone:"" };
+  const TOTAL = 4;
+  const dados = { local:"", localOrigem:"", nome:"", telefone:"" };
 
   function mostrar(step){
     document.querySelectorAll(".step").forEach(s=>s.classList.remove("active"));
@@ -312,13 +351,40 @@ src="https://www.facebook.com/tr?id=1279060486021727&ev=PageView&noscript=1"
     stepAtual = step;
     const bar = document.getElementById("progressBar");
     const wrap = document.getElementById("progressWrap");
-    if(step >= 3){ wrap.style.opacity = "0"; }
+    if(step >= 4){ wrap.style.opacity = "0"; }
     else { wrap.style.opacity = "1"; bar.style.width = (step/TOTAL*100) + "%"; }
     const inp = document.querySelector(`.step[data-step="${step}"] .field`);
     if(inp) setTimeout(()=>inp.focus(), 350);
   }
 
   function next(){ mostrar(stepAtual+1); }
+
+  // Passo 1 — opt-in de localização
+  function responderLocal(val){
+    dados.local = val;
+    document.getElementById("optSim").classList.toggle("sel", val === "Sim");
+    document.getElementById("optNao").classList.toggle("sel", val === "Não");
+    const wrap = document.getElementById("localNaoWrap");
+    const btn  = document.getElementById("btnLocal");
+    if(val === "Sim"){
+      dados.localOrigem = "";
+      wrap.style.display = "none";
+      next();                       // apertou Sim → prossegue direto
+    } else {
+      wrap.style.display = "block";  // apertou Não → pede de onde é
+      btn.style.display  = "flex";
+      setTimeout(()=>document.getElementById("localOrigem").focus(), 100);
+    }
+  }
+
+  function continuarLocal(){
+    const v = document.getElementById("localOrigem").value.trim();
+    const erro = document.getElementById("erroLocal");
+    if(v.length < 2){ erro.classList.add("show"); return; }
+    erro.classList.remove("show");
+    dados.localOrigem = v;
+    next();
+  }
 
   function validarNome(){
     const v = document.getElementById("nome").value.trim();
@@ -356,6 +422,8 @@ src="https://www.facebook.com/tr?id=1279060486021727&ev=PageView&noscript=1"
       if(CONFIG.FORM_ACTION){
         const E = CONFIG.FORM_ENTRIES;
         const body = new URLSearchParams();
+        body.append(E.qualifica,    dados.local);
+        body.append(E.localOrigem,  dados.localOrigem);
         body.append(E.nome,         dados.nome);
         body.append(E.telefone,     dados.telefone);
         body.append(E.origem,       "saocaetano");
@@ -378,7 +446,7 @@ src="https://www.facebook.com/tr?id=1279060486021727&ev=PageView&noscript=1"
 
     if(window.fbq){ fbq('track', 'Lead', { content_name: 'Aparelho Dental' }); }
 
-    mostrar(3);
+    mostrar(4);
 
     waTimer = setTimeout(abrirWhatsApp, 5000);
   }
@@ -390,6 +458,7 @@ src="https://www.facebook.com/tr?id=1279060486021727&ev=PageView&noscript=1"
     window.location.href = `https://wa.me/${CONFIG.WHATSAPP}?text=${msg}`;
   }
 
+  document.getElementById("localOrigem").addEventListener("keydown", e=>{ if(e.key==="Enter") continuarLocal(); });
   document.getElementById("nome").addEventListener("keydown", e=>{ if(e.key==="Enter") validarNome(); });
   telInput.addEventListener("keydown", e=>{ if(e.key==="Enter") enviar(); });
 </script>
