@@ -31,7 +31,6 @@ src="https://www.facebook.com/tr?id=1279060486021727&ev=PageView&noscript=1"
 var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var r="https://analytics.tiktok.com/i18n/pixel/events.js",o=n&&n.partner;ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=r,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};n=document.createElement("script")
 ;n.type="text/javascript",n.async=!0,n.src=r+"?sdkid="+e+"&lib="+t;e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(n,e)};
 
-
   ttq.load('D0JPCKJC77U5RGJ8BH9G');
   ttq.page();
 }(window, document, 'ttq');
@@ -43,8 +42,20 @@ var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n
 <!-- ============================================================= -->
 <script>
   const CONFIG = {
-    // 1) Cole aqui a URL do seu Web App do Google Apps Script (termina em /exec)
-    SHEETS_URL: "https://script.google.com/macros/s/AKfycbxEWzy6cECysh-VpMa2eQ4IlVMYlwFMQH0OFFDDUvzAqfayL-2EmBR4B0-rzVO54_pbHA/exec",
+    // 1) Endpoint do Google Formulário (recebe os leads sem precisar de autorização)
+    //    Respostas caem na aba "Respostas" do formulário / planilha vinculada.
+    FORM_ACTION: "https://docs.google.com/forms/d/e/1FAIpQLSdFxWRQuiAWWUeQzCMFPHG19Oh_5EefNO6brOXt36FhjemkqQ/formResponse",
+    FORM_ENTRIES: {
+      qualifica:    "entry.741652409",   // Mora/trabalha em Pirapora? (Sim/Não)
+      localOrigem:  "entry.1611185944",  // Se não, de onde você é?
+      nome:         "entry.877323197",
+      telefone:     "entry.205404588",
+      origem:       "entry.505461976",
+      utm_source:   "entry.683040128",
+      utm_medium:   "entry.1011237227",
+      utm_campaign: "entry.1822576786",
+      utm_content:  "entry.940572320",
+    },
 
     // 2) WhatsApp de destino (só números, com DDI 55). Ex: 5511999999999
     WHATSAPP: "553898155539",
@@ -172,6 +183,24 @@ var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n
   }
   .erro.show{display:block;}
 
+  /* Opções de assinalar (Sim/Não) */
+  .opcoes{display:flex;flex-direction:column;gap:12px;}
+  .opt{
+    width:100%;
+    border:2px solid var(--cinza-claro);
+    border-radius:14px;
+    padding:18px 16px;
+    font-size:17px;
+    font-weight:600;
+    background:#fff;
+    color:var(--preto);
+    cursor:pointer;
+    text-align:left;
+    transition:border-color .2s, background .2s, transform .12s;
+  }
+  .opt:active{transform:scale(.99);}
+  .opt.sel{border-color:var(--preto);background:#fafafa;}
+
   /* Botões */
   .btn{
     width:100%;
@@ -248,8 +277,27 @@ var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n
     </div>
   </section>
 
-  <!-- ============ PASSO 1 — NOME ============ -->
+  <!-- ============ PASSO 1 — QUALIFICAÇÃO (opt-in) ============ -->
   <section class="step" data-step="1">
+    <h1>Você mora ou trabalha próximo ou em <span class="hl">Pirapora</span>?</h1>
+    <p class="sub">Queremos confirmar se conseguimos te atender 😊</p>
+    <div class="opcoes">
+      <button type="button" class="opt" id="optSim" onclick="responderLocal('Sim')">Sim</button>
+      <button type="button" class="opt" id="optNao" onclick="responderLocal('Não')">Não</button>
+    </div>
+    <div id="localNaoWrap" style="display:none;margin-top:20px;">
+      <label class="label" for="localOrigem">De onde você é?</label>
+      <input class="field" id="localOrigem" type="text" placeholder="Sua cidade / estado" />
+      <div class="erro" id="erroLocal">Por favor, informe de onde você é.</div>
+    </div>
+    <div class="spacer"></div>
+    <div class="btn-area">
+      <button class="btn" id="btnLocal" onclick="continuarLocal()" style="display:none;">Continuar</button>
+    </div>
+  </section>
+
+  <!-- ============ PASSO 2 — NOME ============ -->
+  <section class="step" data-step="2">
     <h1>Qual é o seu <span class="hl">nome</span>?</h1>
     <p class="sub">Para a gente saber como te chamar 😊</p>
     <label class="label" for="nome">Nome completo</label>
@@ -261,8 +309,8 @@ var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n
     </div>
   </section>
 
-  <!-- ============ PASSO 2 — TELEFONE ============ -->
-  <section class="step" data-step="2">
+  <!-- ============ PASSO 3 — TELEFONE ============ -->
+  <section class="step" data-step="3">
     <h1>Qual seu <span class="hl">WhatsApp</span>?</h1>
     <p class="sub">É por aqui que vamos confirmar sua vaga.</p>
     <label class="label" for="telefone">Número com DDD</label>
@@ -277,8 +325,8 @@ var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n
     </div>
   </section>
 
-  <!-- ============ PASSO 3 — SUCESSO / WHATSAPP ============ -->
-  <section class="step" data-step="3">
+  <!-- ============ PASSO 4 — SUCESSO / WHATSAPP ============ -->
+  <section class="step" data-step="4">
     <div class="spacer"></div>
     <div class="center">
       <div class="check">✓</div>
@@ -294,11 +342,6 @@ var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n
 </div>
 
 <script>
-  // TikTok Conversions API — PageView server-side ao carregar
-  if (CONFIG.SHEETS_URL && !CONFIG.SHEETS_URL.includes("COLE_AQUI")) {
-    fetch(CONFIG.SHEETS_URL, { mode: 'no-cors' }).catch(function(){});
-  }
-
   // Captura UTMs da URL no carregamento
   const _utms = (function(){
     const p = new URLSearchParams(window.location.search);
@@ -312,24 +355,49 @@ var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n
   })();
 
   let stepAtual = 0;
-  const TOTAL = 3; // passos com progresso (0..2); o 3 é o sucesso
-  const dados = { nome:"", telefone:"" };
+  const TOTAL = 4;
+  const dados = { local:"", localOrigem:"", nome:"", telefone:"" };
 
   function mostrar(step){
     document.querySelectorAll(".step").forEach(s=>s.classList.remove("active"));
     document.querySelector(`.step[data-step="${step}"]`).classList.add("active");
     stepAtual = step;
-    // progresso
     const bar = document.getElementById("progressBar");
     const wrap = document.getElementById("progressWrap");
-    if(step >= 3){ wrap.style.opacity = "0"; }
+    if(step >= 4){ wrap.style.opacity = "0"; }
     else { wrap.style.opacity = "1"; bar.style.width = (step/TOTAL*100) + "%"; }
-    // foco no primeiro input do passo
     const inp = document.querySelector(`.step[data-step="${step}"] .field`);
     if(inp) setTimeout(()=>inp.focus(), 350);
   }
 
   function next(){ mostrar(stepAtual+1); }
+
+  // Passo 1 — opt-in de localização
+  function responderLocal(val){
+    dados.local = val;
+    document.getElementById("optSim").classList.toggle("sel", val === "Sim");
+    document.getElementById("optNao").classList.toggle("sel", val === "Não");
+    const wrap = document.getElementById("localNaoWrap");
+    const btn  = document.getElementById("btnLocal");
+    if(val === "Sim"){
+      dados.localOrigem = "";
+      wrap.style.display = "none";
+      next();                       // apertou Sim → prossegue direto
+    } else {
+      wrap.style.display = "block";  // apertou Não → pede de onde é
+      btn.style.display  = "flex";
+      setTimeout(()=>document.getElementById("localOrigem").focus(), 100);
+    }
+  }
+
+  function continuarLocal(){
+    const v = document.getElementById("localOrigem").value.trim();
+    const erro = document.getElementById("erroLocal");
+    if(v.length < 2){ erro.classList.add("show"); return; }
+    erro.classList.remove("show");
+    dados.localOrigem = v;
+    next();
+  }
 
   function validarNome(){
     const v = document.getElementById("nome").value.trim();
@@ -340,7 +408,6 @@ var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n
     next();
   }
 
-  // máscara simples de telefone BR
   const telInput = document.getElementById("telefone");
   telInput.addEventListener("input", ()=>{
     let v = telInput.value.replace(/\D/g,"").slice(0,11);
@@ -359,57 +426,53 @@ var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n
     erro.classList.remove("show");
     dados.telefone = telInput.value;
 
-    // estado de carregamento
     const btn = document.getElementById("btnEnviar");
     const txt = document.getElementById("btnEnviarTxt");
     const loader = document.getElementById("loader");
     btn.disabled = true; txt.textContent = "Enviando..."; loader.style.display = "inline-block";
 
     try{
-      if(CONFIG.SHEETS_URL && !CONFIG.SHEETS_URL.includes("COLE_AQUI")){
-        await fetch(CONFIG.SHEETS_URL, {
+      if(CONFIG.FORM_ACTION){
+        const E = CONFIG.FORM_ENTRIES;
+        const body = new URLSearchParams();
+        body.append(E.qualifica,    dados.local);
+        body.append(E.localOrigem,  dados.localOrigem);
+        body.append(E.nome,         dados.nome);
+        body.append(E.telefone,     dados.telefone);
+        body.append(E.origem,       "pirapora");
+        body.append(E.utm_source,   _utms.utm_source);
+        body.append(E.utm_medium,   _utms.utm_medium);
+        body.append(E.utm_campaign, _utms.utm_campaign);
+        body.append(E.utm_content,  _utms.utm_content);
+        await fetch(CONFIG.FORM_ACTION, {
           method:"POST",
           mode:"no-cors",
-          headers:{"Content-Type":"text/plain;charset=utf-8"},
-          body: JSON.stringify({
-            nome: dados.nome,
-            telefone: dados.telefone,
-            origem: "pirapora",
-            data: new Date().toISOString(),
-            utm_source:   _utms.utm_source,
-            utm_medium:   _utms.utm_medium,
-            utm_campaign: _utms.utm_campaign,
-            utm_content:  _utms.utm_content,
-            utm_term:     _utms.utm_term,
-          })
+          headers:{"Content-Type":"application/x-www-form-urlencoded"},
+          body: body.toString()
         });
       }
     }catch(e){
-      console.warn("Falha ao enviar para a planilha:", e);
-      // segue mesmo assim — não bloqueia o lead de ir pro WhatsApp
+      console.warn("Falha ao enviar o lead:", e);
     }
 
     loader.style.display = "none";
 
-    // dispara evento de conversão pro Meta Pixel (só ao concluir o formulário)
     if(window.fbq){ fbq('track', 'Lead', { content_name: 'Aparelho Dental' }); }
-    // evento de conversão pro TikTok Pixel
     if(window.ttq){ ttq.track('Contact', { content_name: 'Aparelho Dental' }); }
 
-    mostrar(3);
+    mostrar(4);
 
-    // se não clicar em 5s, redireciona automático pro WhatsApp
     waTimer = setTimeout(abrirWhatsApp, 5000);
   }
 
   let waTimer = null;
   function abrirWhatsApp(){
-    clearTimeout(waTimer); // evita disparo duplo se o usuário clicar antes dos 5s
+    clearTimeout(waTimer);
     const msg = encodeURIComponent(CONFIG.WHATSAPP_MSG);
     window.location.href = `https://wa.me/${CONFIG.WHATSAPP}?text=${msg}`;
   }
 
-  // Enter avança nos inputs
+  document.getElementById("localOrigem").addEventListener("keydown", e=>{ if(e.key==="Enter") continuarLocal(); });
   document.getElementById("nome").addEventListener("keydown", e=>{ if(e.key==="Enter") validarNome(); });
   telInput.addEventListener("keydown", e=>{ if(e.key==="Enter") enviar(); });
 </script>
